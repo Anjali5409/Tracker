@@ -3,970 +3,699 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Monthly Habit Tracker</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<title>Habit Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --teal-dark: #1a5f7a;
-    --teal-mid: #2a8fad;
-    --teal-light: #4bbfd4;
-    --teal-pale: #c8eaf0;
-    --green: #3aaf85;
-    --green-light: #b6e8d7;
-    --blue-dark: #1e3a5f;
-    --blue-mid: #2e6da4;
-    --purple: #7b6fa0;
-    --purple-light: #d4cfe8;
-    --gray-bg: #f0f4f7;
-    --gray-border: #d0dce6;
-    --white: #ffffff;
-    --text-dark: #1a2a3a;
-    --text-mid: #4a6070;
-    --text-light: #8a9ab0;
-    --red: #e05050;
-    --yellow: #f5c842;
-    --shadow: 0 4px 20px rgba(26,95,122,0.12);
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--gray-bg);
-    color: var(--text-dark);
-    min-height: 100vh;
-    padding: 20px;
-  }
-  .page-wrap {
-    max-width: 1400px;
-    margin: 0 auto;
-    background: var(--white);
-    border-radius: 16px;
-    box-shadow: var(--shadow);
-    overflow: hidden;
-  }
+:root{
+  --accent1:#7c3aed;--accent2:#06b6d4;--accent3:#f59e0b;--accent4:#10b981;--accent5:#ef4444;
+  --glass:rgba(255,255,255,0.06);--glass-b:rgba(255,255,255,0.12);
+  --text:rgba(255,255,255,0.95);--text-dim:rgba(255,255,255,0.55);--text-faint:rgba(255,255,255,0.2);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  font-family:'Outfit',sans-serif;background:#060616;color:var(--text);
+  min-height:100vh;overflow-x:hidden;
+}
+body::before{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 70% 60% at 15% 10%,rgba(124,58,237,0.22) 0%,transparent 55%),
+    radial-gradient(ellipse 55% 50% at 85% 85%,rgba(6,182,212,0.18) 0%,transparent 55%),
+    radial-gradient(ellipse 40% 35% at 50% 45%,rgba(245,158,11,0.08) 0%,transparent 60%),
+    linear-gradient(135deg,#060616 0%,#0c1535 55%,#060a1a 100%);
+}
+.orb{position:fixed;border-radius:50%;filter:blur(90px);pointer-events:none;z-index:0;
+  animation:floatOrb 14s ease-in-out infinite;}
+.orb1{width:500px;height:500px;background:rgba(124,58,237,0.18);top:-150px;left:-150px;animation-delay:0s;}
+.orb2{width:400px;height:400px;background:rgba(6,182,212,0.14);bottom:-100px;right:-100px;animation-delay:-5s;}
+.orb3{width:300px;height:300px;background:rgba(245,158,11,0.1);top:35%;left:55%;animation-delay:-9s;}
+@keyframes floatOrb{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(25px,-25px) scale(1.05);}}
 
-  /* HEADER */
-  .header {
-    background: linear-gradient(135deg, var(--teal-dark) 0%, var(--blue-dark) 100%);
-    color: white;
-    text-align: center;
-    padding: 22px 30px;
-    position: relative;
-  }
-  .header h1 {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 2.4rem;
-    letter-spacing: 4px;
-    text-shadow: 0 2px 8px rgba(0,0,0,0.3);
-  }
-  .header-actions {
-    position: absolute; right: 20px; top: 50%; transform: translateY(-50%);
-    display: flex; gap: 8px;
-  }
-  .btn {
-    padding: 8px 16px; border-radius: 8px; border: none; cursor: pointer;
-    font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 0.8rem;
-    transition: all 0.2s;
-  }
-  .btn-white { background: white; color: var(--teal-dark); }
-  .btn-white:hover { background: var(--teal-pale); }
-  .btn-danger { background: var(--red); color: white; }
-  .btn-danger:hover { opacity: 0.85; }
-  .btn-teal { background: var(--teal-mid); color: white; }
-  .btn-teal:hover { background: var(--teal-dark); }
+.wrap{position:relative;z-index:1;max-width:1520px;margin:0 auto;padding:18px 14px 40px;}
 
-  /* MAIN GRID */
-  .main-grid {
-    display: grid;
-    grid-template-columns: 200px 1fr 160px 200px;
-    gap: 0;
-    padding: 16px;
-    align-items: start;
-  }
+/* GLASS CARD */
+.gc{
+  background:rgba(255,255,255,0.055);
+  backdrop-filter:blur(22px) saturate(180%);
+  -webkit-backdrop-filter:blur(22px) saturate(180%);
+  border:1px solid var(--glass-b);
+  border-radius:20px;
+  box-shadow:0 8px 32px rgba(0,0,0,0.45),0 1px 0 rgba(255,255,255,0.09) inset,0 -1px 0 rgba(0,0,0,0.25) inset;
+}
 
-  /* LEFT PANEL */
-  .left-panel {
-    background: var(--gray-bg);
-    border-radius: 12px;
-    padding: 16px;
-    border: 1px solid var(--gray-border);
-  }
-  .meta-row { margin-bottom: 10px; }
-  .meta-label { font-size: 0.72rem; font-weight: 700; color: var(--text-mid); text-transform: uppercase; letter-spacing: 1px; }
-  .meta-val { font-size: 0.9rem; font-weight: 600; color: var(--text-dark); }
-  .meta-input {
-    width: 100%; padding: 6px 8px; border-radius: 7px; border: 1.5px solid var(--gray-border);
-    font-family: 'DM Sans', sans-serif; font-size: 0.85rem; color: var(--text-dark);
-    background: white; margin-top: 2px; outline: none;
-    transition: border-color 0.2s;
-  }
-  .meta-input:focus { border-color: var(--teal-mid); }
-  .meta-select {
-    width: 100%; padding: 6px 8px; border-radius: 7px; border: 1.5px solid var(--gray-border);
-    font-family: 'DM Sans', sans-serif; font-size: 0.85rem; color: var(--text-dark);
-    background: white; margin-top: 2px; outline: none; cursor: pointer;
-  }
-  .divider { height: 1px; background: var(--gray-border); margin: 12px 0; }
-  .days-badge {
-    text-align: center; padding: 10px; background: var(--teal-dark); color: white;
-    border-radius: 10px; margin-top: 10px;
-  }
-  .days-badge .big-num { font-family: 'Bebas Neue', sans-serif; font-size: 2.2rem; line-height: 1; }
-  .days-badge .lbl { font-size: 0.7rem; letter-spacing: 1px; opacity: 0.8; }
+/* HEADER */
+.header{
+  text-align:center;padding:26px 20px 20px;margin-bottom:18px;
+  background:linear-gradient(135deg,rgba(124,58,237,0.22) 0%,rgba(6,182,212,0.14) 100%);
+  border-radius:24px;border:1px solid rgba(255,255,255,0.1);
+  box-shadow:0 4px 40px rgba(124,58,237,0.25),0 1px 0 rgba(255,255,255,0.12) inset;
+  position:relative;overflow:hidden;
+}
+.header::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,rgba(124,58,237,0.9),rgba(6,182,212,0.9),rgba(245,158,11,0.7),transparent);}
+.header::after{content:'';position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 70% 90% at 50% -10%,rgba(124,58,237,0.12),transparent);}
+.header h1{
+  font-family:'Orbitron',sans-serif;font-size:clamp(1.3rem,3.5vw,2.5rem);font-weight:900;
+  letter-spacing:clamp(3px,1vw,7px);text-transform:uppercase;
+  background:linear-gradient(135deg,#fff 0%,#c4b5fd 35%,#67e8f9 70%,#fde68a 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  filter:drop-shadow(0 0 24px rgba(124,58,237,0.7));position:relative;z-index:1;
+}
+.header-sub{font-size:0.68rem;letter-spacing:4px;color:var(--text-dim);margin-top:5px;text-transform:uppercase;position:relative;z-index:1;}
+.header-actions{position:absolute;right:18px;top:50%;transform:translateY(-50%);display:flex;gap:7px;align-items:center;}
 
-  /* CHART AREA */
-  .chart-area {
-    background: linear-gradient(180deg, var(--teal-dark) 0%, var(--teal-mid) 100%);
-    border-radius: 12px;
-    margin: 0 12px;
-    padding: 16px 16px 8px;
-    position: relative;
-    overflow: hidden;
-  }
-  #barChart {
-    width: 100%; height: 160px; display: block;
-  }
-  .day-numbers {
-    display: flex; justify-content: space-between;
-    padding: 4px 0 0; font-size: 0.6rem; color: rgba(255,255,255,0.7);
-  }
+/* BUTTONS */
+.btn{
+  padding:8px 15px;border-radius:12px;border:1px solid var(--glass-b);
+  cursor:pointer;font-family:'Outfit',sans-serif;font-weight:600;font-size:0.76rem;
+  transition:all 0.25s cubic-bezier(.4,0,.2,1);letter-spacing:0.3px;
+}
+.btn-g{background:rgba(255,255,255,0.08);color:var(--text);
+  box-shadow:0 4px 14px rgba(0,0,0,0.25),0 1px 0 rgba(255,255,255,0.1) inset;}
+.btn-g:hover{background:rgba(255,255,255,0.14);transform:translateY(-2px);box-shadow:0 7px 20px rgba(0,0,0,0.35);}
+.btn-v{background:linear-gradient(135deg,#7c3aed,#5b21b6);color:#fff;border-color:rgba(167,139,250,0.4);
+  box-shadow:0 4px 16px rgba(124,58,237,0.45),0 1px 0 rgba(255,255,255,0.2) inset;}
+.btn-v:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(124,58,237,0.65);}
+.btn-r{background:linear-gradient(135deg,#ef4444,#b91c1c);color:#fff;border-color:rgba(252,165,165,0.3);
+  box-shadow:0 4px 14px rgba(239,68,68,0.4);}
+.btn-r:hover{transform:translateY(-1px);box-shadow:0 6px 22px rgba(239,68,68,0.55);}
+.btn-c{background:linear-gradient(135deg,#06b6d4,#0e7490);color:#fff;border-color:rgba(103,232,249,0.4);
+  box-shadow:0 4px 14px rgba(6,182,212,0.4);}
+.btn-c:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(6,182,212,0.6);}
 
-  /* SUCCESS RATE */
-  .success-panel {
-    text-align: center; padding: 10px;
-    border-radius: 12px; border: 1px solid var(--gray-border);
-    background: var(--white);
-  }
-  .success-label {
-    font-size: 0.65rem; font-weight: 700; color: var(--text-mid);
-    text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 6px;
-    background: var(--teal-dark); color: white; padding: 3px 8px; border-radius: 4px; display: inline-block;
-  }
-  .success-pct {
-    font-family: 'Bebas Neue', sans-serif; font-size: 3rem; color: var(--teal-dark);
-    line-height: 1; border: 3px solid var(--teal-dark); border-radius: 10px;
-    padding: 4px 16px; display: inline-block; margin: 6px 0;
-  }
-  .success-msg {
-    font-size: 0.75rem; font-weight: 700; color: var(--text-mid); text-transform: uppercase; letter-spacing: 1px;
-    margin-top: 4px;
-  }
+/* MAIN GRID */
+.main-grid{display:grid;grid-template-columns:205px 1fr 162px 205px;gap:13px;margin-bottom:13px;align-items:start;}
 
-  /* RIGHT DONUT PANELS */
-  .right-panels { display: flex; flex-direction: column; gap: 10px; }
-  .donut-panel {
-    border-radius: 12px; padding: 12px 14px;
-    text-align: center;
-  }
-  .dp-monthly { background: var(--teal-dark); color: white; }
-  .dp-normalized { background: var(--green); color: white; }
-  .dp-momentum { background: var(--purple); color: white; }
-  .donut-title {
-    font-size: 0.62rem; font-weight: 700; letter-spacing: 1.2px;
-    text-transform: uppercase; margin-bottom: 8px; opacity: 0.9;
-  }
-  .donut-wrap { position: relative; display: inline-block; }
-  .donut-wrap canvas { display: block; }
-  .donut-center {
-    position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
-    text-align: center; pointer-events: none;
-  }
-  .donut-pct { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; }
-  .donut-sub { font-size: 0.55rem; opacity: 0.85; }
+/* LEFT PANEL */
+.left-panel{padding:18px 15px;}
+.meta-row{margin-bottom:11px;}
+.meta-label{font-size:0.6rem;font-weight:700;color:var(--accent2);text-transform:uppercase;letter-spacing:1.8px;margin-bottom:4px;}
+.meta-val{font-size:0.86rem;font-weight:600;color:var(--text);}
+.meta-input{
+  width:100%;padding:8px 10px;border-radius:10px;border:1px solid var(--glass-b);
+  font-family:'Outfit',sans-serif;font-size:0.83rem;color:var(--text);
+  background:rgba(255,255,255,0.05);outline:none;transition:all 0.2s;
+}
+.meta-input:focus{border-color:var(--accent1);background:rgba(124,58,237,0.12);box-shadow:0 0 0 3px rgba(124,58,237,0.18);}
+.meta-select{
+  width:100%;padding:8px 10px;border-radius:10px;border:1px solid var(--glass-b);
+  font-family:'Outfit',sans-serif;font-size:0.83rem;color:var(--text);
+  background:rgba(15,10,40,0.85);outline:none;cursor:pointer;transition:all 0.2s;
+}
+.meta-select option{background:#120d2e;}
+.divider{height:1px;background:var(--glass-b);margin:11px 0;}
+.days-badge{
+  text-align:center;padding:14px 10px;
+  background:linear-gradient(135deg,rgba(124,58,237,0.32),rgba(6,182,212,0.22));
+  border:1px solid rgba(124,58,237,0.45);border-radius:16px;margin-top:10px;
+  box-shadow:0 0 25px rgba(124,58,237,0.22),0 1px 0 rgba(255,255,255,0.1) inset;
+  position:relative;overflow:hidden;
+}
+.days-badge::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(167,139,250,0.6),transparent);}
+.days-badge .big-num{
+  font-family:'Orbitron',sans-serif;font-size:2.5rem;font-weight:900;line-height:1;
+  background:linear-gradient(135deg,#c4b5fd,#67e8f9);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.days-badge .lbl{font-size:0.6rem;letter-spacing:2.5px;color:var(--text-dim);margin-top:3px;}
 
-  /* HABIT TABLE */
-  .table-wrap {
-    padding: 12px 16px;
-    overflow-x: auto;
-  }
-  .habit-table {
-    width: 100%; border-collapse: collapse; font-size: 0.78rem;
-  }
-  .habit-table th {
-    background: var(--teal-dark); color: white; padding: 8px 6px;
-    text-align: center; font-weight: 600; font-size: 0.68rem;
-    white-space: nowrap;
-  }
-  .habit-table th.habit-col { text-align: left; padding-left: 10px; min-width: 110px; }
-  .habit-table th.goal-col { min-width: 50px; }
-  .habit-table th.progress-col { min-width: 120px; text-align: left; padding-left: 6px; }
-  .habit-table td { padding: 5px 4px; text-align: center; border-bottom: 1px solid var(--gray-border); }
-  .habit-table tr:last-child td { border-bottom: none; }
-  .habit-table tr:hover td { background: var(--teal-pale); }
+/* CHART */
+.chart-area{
+  padding:14px 14px 6px;position:relative;overflow:hidden;
+  background:linear-gradient(175deg,rgba(6,8,28,0.95) 0%,rgba(12,18,55,0.9) 100%);
+}
+.chart-area::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,rgba(255,200,0,0.7),rgba(255,68,68,0.7),transparent);}
+#barChart{width:100%;height:150px;display:block;}
+.day-numbers{display:flex;padding:3px 0 0;font-size:0.52rem;color:var(--text-faint);}
 
-  .habit-name-cell { text-align: left !important; padding-left: 10px !important; font-weight: 600; }
-  .habit-name-input {
-    border: none; background: transparent; font-family: 'DM Sans', sans-serif;
-    font-size: 0.78rem; font-weight: 600; color: var(--text-dark); width: 100%;
-    outline: none; cursor: pointer;
-  }
-  .habit-name-input:focus { background: white; border-bottom: 2px solid var(--teal-mid); }
-  .goal-input {
-    width: 40px; border: 1.5px solid var(--gray-border); border-radius: 5px;
-    text-align: center; font-family: 'DM Sans', sans-serif; font-size: 0.78rem;
-    font-weight: 600; color: var(--text-dark); padding: 3px; outline: none;
-    transition: border-color 0.2s;
-  }
-  .goal-input:focus { border-color: var(--teal-mid); }
+/* SUCCESS */
+.success-panel{
+  text-align:center;padding:16px 10px;
+  background:linear-gradient(155deg,rgba(124,58,237,0.22),rgba(6,182,212,0.16));
+  border:1px solid rgba(124,58,237,0.35);
+  box-shadow:0 0 30px rgba(124,58,237,0.14),0 8px 32px rgba(0,0,0,0.4);
+}
+.s-label{
+  font-size:0.56rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+  background:linear-gradient(135deg,var(--accent1),var(--accent2));
+  padding:3px 10px;border-radius:20px;display:inline-block;margin-bottom:9px;
+}
+.s-pct{
+  font-family:'Orbitron',sans-serif;font-size:2.5rem;font-weight:900;line-height:1;
+  display:block;margin:5px 0;
+  background:linear-gradient(135deg,#c4b5fd 0%,#67e8f9 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  filter:drop-shadow(0 0 18px rgba(124,58,237,0.75));
+}
+.s-icon{font-size:1.4rem;margin:4px 0;display:block;}
+.s-msg{font-size:0.63rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);margin-top:3px;}
 
-  .day-cell { cursor: pointer; border-radius: 4px; transition: background 0.15s; }
-  .day-cell:hover { background: var(--teal-pale) !important; }
-  .day-cell.checked {
-    background: var(--teal-mid) !important;
-    color: white;
-  }
-  .day-cell.checked::after { content: '✕'; font-size: 0.75rem; color: white; font-weight: 700; }
-  .day-cell.weekend { background: #f5f8fb; }
+/* DONUTS */
+.right-panels{display:flex;flex-direction:column;gap:9px;}
+.dp{border-radius:16px;padding:11px 13px;text-align:center;position:relative;overflow:hidden;}
+.dp::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.25),transparent);}
+.dp1{background:linear-gradient(135deg,rgba(124,58,237,0.38),rgba(109,40,217,0.28));border:1px solid rgba(167,139,250,0.32);box-shadow:0 4px 20px rgba(124,58,237,0.22);}
+.dp2{background:linear-gradient(135deg,rgba(16,185,129,0.38),rgba(5,150,105,0.28));border:1px solid rgba(52,211,153,0.32);box-shadow:0 4px 20px rgba(16,185,129,0.22);}
+.dp3{background:linear-gradient(135deg,rgba(245,158,11,0.32),rgba(217,119,6,0.22));border:1px solid rgba(251,191,36,0.32);box-shadow:0 4px 20px rgba(245,158,11,0.22);}
+.dp-title{font-size:0.54rem;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;margin-bottom:7px;color:rgba(255,255,255,0.8);}
+.dp-wrap{position:relative;display:inline-block;}
+.dp-wrap canvas{display:block;}
+.dp-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none;}
+.dp-pct{font-family:'Orbitron',sans-serif;font-size:0.95rem;font-weight:700;color:#fff;}
+.dp-sub{font-size:0.48rem;color:rgba(255,255,255,0.55);}
 
-  .progress-cell { text-align: left !important; padding-left: 6px !important; }
-  .progress-bar-wrap { display: flex; align-items: center; gap: 6px; }
-  .progress-bar-bg {
-    flex: 1; height: 10px; background: var(--gray-border); border-radius: 6px; overflow: hidden;
-  }
-  .progress-bar-fill { height: 100%; border-radius: 6px; transition: width 0.4s; }
-  .progress-pct { font-size: 0.72rem; font-weight: 700; min-width: 32px; }
+/* TABLE */
+.table-glass{
+  background:rgba(255,255,255,0.035);
+  backdrop-filter:blur(20px);border:1px solid var(--glass-b);
+  border-radius:20px;overflow:hidden;margin-bottom:13px;
+  box-shadow:0 8px 32px rgba(0,0,0,0.35),0 1px 0 rgba(255,255,255,0.06) inset;
+}
+.table-wrap{padding:10px 14px;overflow-x:auto;}
+.table-wrap::-webkit-scrollbar{height:3px;}
+.table-wrap::-webkit-scrollbar-track{background:rgba(255,255,255,0.03);border-radius:10px;}
+.table-wrap::-webkit-scrollbar-thumb{background:rgba(124,58,237,0.5);border-radius:10px;}
+.ht{width:100%;border-collapse:separate;border-spacing:0;font-size:0.76rem;}
+.ht th{
+  background:linear-gradient(180deg,rgba(124,58,237,0.55) 0%,rgba(91,33,182,0.4) 100%);
+  color:rgba(255,255,255,0.92);padding:8px 5px;
+  text-align:center;font-weight:700;font-size:0.6rem;white-space:nowrap;
+  border-bottom:1px solid rgba(167,139,250,0.3);
+}
+.ht th:first-child{border-radius:12px 0 0 0;}
+.ht th:last-child{border-radius:0 12px 0 0;}
+.ht th.hc{text-align:left;padding-left:12px;min-width:110px;letter-spacing:0.8px;}
+.ht th.gc2{min-width:48px;}
+.ht th.pc{min-width:128px;text-align:left;padding-left:8px;}
+.ht td{padding:5px 3px;text-align:center;border-bottom:1px solid rgba(255,255,255,0.045);transition:background 0.15s;}
+.ht tbody tr:hover td{background:rgba(124,58,237,0.09)!important;}
+.ht tbody tr:last-child td{border-bottom:none;}
+.ht tbody tr:nth-child(even) td{background:rgba(255,255,255,0.018);}
+.hn-cell{text-align:left!important;padding-left:12px!important;}
+.hn-inp{
+  border:none;background:transparent;font-family:'Outfit',sans-serif;
+  font-size:0.78rem;font-weight:600;color:var(--text);width:100%;outline:none;cursor:pointer;
+}
+.hn-inp:focus{background:rgba(124,58,237,0.1);border-bottom:2px solid var(--accent1);border-radius:4px;padding:2px 4px;}
+.gi{
+  width:40px;border:1px solid var(--glass-b);border-radius:8px;
+  text-align:center;font-family:'Outfit',sans-serif;font-size:0.76rem;font-weight:700;
+  color:var(--text);padding:4px 2px;outline:none;background:rgba(255,255,255,0.05);transition:all 0.2s;
+}
+.gi:focus{border-color:var(--accent1);background:rgba(124,58,237,0.14);}
+.dc{cursor:pointer;border-radius:6px;transition:all 0.18s;min-width:17px;}
+.dc:hover{background:rgba(6,182,212,0.22)!important;transform:scale(1.15);}
+.dc.ck{
+  background:linear-gradient(135deg,rgba(124,58,237,0.75),rgba(6,182,212,0.65))!important;
+  box-shadow:0 0 10px rgba(124,58,237,0.55);
+}
+.dc.ck::after{content:'✕';font-size:0.68rem;color:#fff;font-weight:900;}
+@keyframes ckPulse{0%{box-shadow:0 0 0 0 rgba(124,58,237,0.8);}70%{box-shadow:0 0 0 7px rgba(124,58,237,0);}100%{box-shadow:0 0 0 0 rgba(124,58,237,0);}}
+.dc.ck{animation:ckPulse 0.4s ease-out;}
+.dc.wknd{background:rgba(255,255,255,0.025);}
+.tdy-col{background:rgba(245,158,11,0.07)!important;}
+.tdy-hdr{background:linear-gradient(180deg,rgba(245,158,11,0.65),rgba(217,119,6,0.45))!important;color:#fbbf24!important;box-shadow:0 0 12px rgba(245,158,11,0.35);}
+.prog-cell{text-align:left!important;padding-left:7px!important;}
+.pb-wrap{display:flex;align-items:center;gap:5px;}
+.pb-bg{flex:1;height:7px;background:rgba(255,255,255,0.07);border-radius:10px;overflow:hidden;box-shadow:inset 0 1px 3px rgba(0,0,0,0.4);}
+.pb-fill{height:100%;border-radius:10px;transition:width 0.5s cubic-bezier(.4,0,.2,1);}
+.pb-pct{font-size:0.68rem;font-weight:700;min-width:30px;}
+.del-b{background:none;border:none;cursor:pointer;color:var(--text-faint);font-size:0.88rem;padding:2px 5px;border-radius:6px;transition:all 0.2s;line-height:1;}
+.del-b:hover{color:var(--accent5);background:rgba(239,68,68,0.14);}
 
-  .day-header { font-size: 0.6rem; }
-  .day-num { font-size: 0.65rem; font-weight: 700; }
-  .day-ltr { font-size: 0.55rem; opacity: 0.75; }
+/* BOTTOM */
+.bot-row{display:grid;grid-template-columns:205px 1fr 162px 205px;gap:13px;align-items:center;}
+.bot-hint{font-size:0.67rem;color:var(--text-dim);line-height:1.65;padding:14px 15px;}
+.bot-bars{display:flex;gap:5px;align-items:flex-end;height:52px;padding:0 16px;}
+.bbc{display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;}
+.bbc-b{width:100%;background:linear-gradient(180deg,rgba(6,182,212,0.85),rgba(124,58,237,0.65));
+  border-radius:4px 4px 0 0;transition:height 0.5s cubic-bezier(.4,0,.2,1);
+  box-shadow:0 0 10px rgba(6,182,212,0.3);}
+.bbc-l{font-size:0.56rem;color:var(--text-dim);font-weight:600;}
+.tot-panel{text-align:center;padding:14px 10px;}
+.tot-big{
+  font-family:'Orbitron',sans-serif;font-size:1.9rem;font-weight:900;line-height:1;
+  background:linear-gradient(135deg,#fde68a,#f59e0b);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  filter:drop-shadow(0 0 12px rgba(245,158,11,0.6));
+}
+.tot-sub{font-size:0.6rem;letter-spacing:2.5px;color:var(--text-dim);margin-top:3px;text-transform:uppercase;}
+.add-panel{padding:14px 15px;display:flex;align-items:center;}
 
-  /* BOTTOM ROW */
-  .bottom-row {
-    display: grid; grid-template-columns: 200px 1fr 160px 200px;
-    padding: 6px 16px 16px; gap: 0; align-items: end;
-  }
-  .bottom-hint {
-    font-size: 0.7rem; color: var(--text-mid); line-height: 1.5;
-    padding-right: 12px;
-  }
-  .bottom-bar-chart {
-    display: flex; gap: 4px; align-items: flex-end; height: 50px;
-    padding: 0 12px;
-  }
-  .bbc-col { display: flex; flex-direction: column; align-items: center; gap: 2px; flex: 1; }
-  .bbc-bar {
-    width: 100%; background: var(--teal-dark); border-radius: 3px 3px 0 0;
-    transition: height 0.4s;
-  }
-  .bbc-lbl { font-size: 0.6rem; color: var(--text-mid); font-weight: 600; }
-  .total-panel {
-    text-align: center; padding: 6px; color: var(--text-mid);
-  }
-  .total-big { font-family: 'Bebas Neue', sans-serif; font-size: 2.2rem; color: var(--teal-dark); line-height: 1; }
-  .total-sub { font-size: 0.7rem; font-weight: 600; letter-spacing: 1px; }
+/* MODAL */
+.modal-bg{display:none;position:fixed;inset:0;z-index:999;background:rgba(0,0,0,0.72);backdrop-filter:blur(10px);align-items:center;justify-content:center;}
+.modal-bg.open{display:flex;}
+.modal{
+  background:rgba(10,8,35,0.96);backdrop-filter:blur(32px);
+  border:1px solid rgba(124,58,237,0.45);border-radius:24px;
+  padding:30px 34px;box-shadow:0 24px 60px rgba(0,0,0,0.65),0 0 50px rgba(124,58,237,0.18);
+  min-width:340px;max-width:420px;position:relative;overflow:hidden;
+  animation:mIn 0.3s cubic-bezier(.4,0,.2,1);
+}
+@keyframes mIn{from{opacity:0;transform:scale(0.9) translateY(14px);}to{opacity:1;transform:scale(1) translateY(0);}}
+.modal::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--accent1),var(--accent2),var(--accent3));}
+.modal h2{
+  font-family:'Orbitron',sans-serif;font-size:1.35rem;font-weight:900;letter-spacing:2px;margin-bottom:18px;
+  background:linear-gradient(135deg,#c4b5fd,#67e8f9);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.modal label{font-size:0.72rem;font-weight:700;color:var(--accent2);display:block;margin-bottom:5px;margin-top:13px;letter-spacing:1px;text-transform:uppercase;}
+.modal input{
+  width:100%;padding:11px 13px;border:1px solid var(--glass-b);border-radius:12px;
+  font-family:'Outfit',sans-serif;font-size:0.9rem;color:var(--text);outline:none;
+  background:rgba(255,255,255,0.055);transition:all 0.2s;
+}
+.modal input:focus{border-color:var(--accent1);background:rgba(124,58,237,0.12);box-shadow:0 0 0 3px rgba(124,58,237,0.22);}
+.modal-btns{display:flex;gap:10px;margin-top:20px;}
+.modal-btns .btn{flex:1;padding:11px;font-size:0.86rem;}
 
-  /* ADD HABIT ROW */
-  .add-habit-row td { background: #f8fbfc !important; }
-  .add-btn {
-    background: none; border: 2px dashed var(--teal-light); color: var(--teal-mid);
-    border-radius: 7px; padding: 5px 14px; cursor: pointer; font-family: 'DM Sans', sans-serif;
-    font-size: 0.78rem; font-weight: 600; transition: all 0.2s; width: 100%;
-  }
-  .add-btn:hover { background: var(--teal-pale); border-style: solid; }
+/* TOAST */
+.toast{
+  position:fixed;bottom:26px;right:26px;z-index:9999;
+  background:rgba(10,8,35,0.96);backdrop-filter:blur(20px);
+  border:1px solid rgba(124,58,237,0.4);border-radius:14px;
+  padding:12px 20px;font-size:0.84rem;font-weight:600;color:var(--text);
+  opacity:0;transform:translateY(12px) scale(0.94);
+  transition:all 0.3s cubic-bezier(.4,0,.2,1);pointer-events:none;
+  box-shadow:0 8px 30px rgba(0,0,0,0.5),0 0 25px rgba(124,58,237,0.2);
+}
+.toast.show{opacity:1;transform:translateY(0) scale(1);}
 
-  .del-btn {
-    background: none; border: none; cursor: pointer; color: var(--text-light);
-    font-size: 1rem; line-height: 1; padding: 2px 4px; border-radius: 4px;
-    transition: color 0.2s;
-  }
-  .del-btn:hover { color: var(--red); }
-
-  .today-col { background: rgba(75,191,212,0.12) !important; }
-  .today-header { background: var(--teal-light) !important; color: var(--teal-dark) !important; }
-
-  /* MODAL */
-  .modal-bg {
-    display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5);
-    z-index: 999; align-items: center; justify-content: center;
-  }
-  .modal-bg.open { display: flex; }
-  .modal {
-    background: white; border-radius: 16px; padding: 28px 32px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.25); min-width: 340px; max-width: 400px;
-  }
-  .modal h2 { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; color: var(--teal-dark); margin-bottom: 16px; letter-spacing: 2px; }
-  .modal label { font-size: 0.8rem; font-weight: 600; color: var(--text-mid); display: block; margin-bottom: 4px; margin-top: 12px; }
-  .modal input {
-    width: 100%; padding: 10px 12px; border: 2px solid var(--gray-border); border-radius: 8px;
-    font-family: 'DM Sans', sans-serif; font-size: 0.9rem; outline: none;
-    transition: border-color 0.2s;
-  }
-  .modal input:focus { border-color: var(--teal-mid); }
-  .modal-btns { display: flex; gap: 10px; margin-top: 20px; }
-  .modal-btns .btn { flex: 1; padding: 10px; font-size: 0.9rem; }
-
-  /* TOAST */
-  .toast {
-    position: fixed; bottom: 24px; right: 24px; background: var(--teal-dark); color: white;
-    padding: 12px 20px; border-radius: 10px; font-size: 0.85rem; font-weight: 600;
-    opacity: 0; transform: translateY(10px); transition: all 0.3s; pointer-events: none;
-    z-index: 9999;
-  }
-  .toast.show { opacity: 1; transform: translateY(0); }
-
-  @media (max-width: 900px) {
-    .main-grid, .bottom-row { grid-template-columns: 1fr; }
-    .right-panels { flex-direction: row; flex-wrap: wrap; }
-    .donut-panel { flex: 1; min-width: 120px; }
-    body { padding: 8px; }
-  }
+/* RESPONSIVE */
+@media(max-width:1200px){
+  .main-grid{grid-template-columns:195px 1fr 155px;}
+  .right-panels{grid-column:1/-1;flex-direction:row;gap:9px;}
+  .dp{flex:1;}
+  .bot-row{grid-template-columns:195px 1fr 155px;}
+}
+@media(max-width:800px){
+  .header h1{font-size:1.35rem;letter-spacing:2px;}
+  .header-actions{position:static;transform:none;display:flex;justify-content:center;margin-top:11px;flex-wrap:wrap;gap:6px;}
+  .header{padding:16px 13px 14px;}
+  .main-grid{grid-template-columns:1fr 1fr;gap:10px;padding:0;}
+  .chart-area{grid-column:1/-1;}
+  .right-panels{grid-column:1/-1;flex-direction:row;flex-wrap:wrap;gap:7px;}
+  .dp{flex:1;min-width:95px;}
+  .bot-row{grid-template-columns:1fr 1fr;gap:10px;}
+  .bot-hint{display:none;}
+  .wrap{padding:10px 9px 28px;}
+}
+@media(max-width:480px){
+  .main-grid{grid-template-columns:1fr;}
+  .bot-row{grid-template-columns:1fr;}
+  .header h1{font-size:1.05rem;letter-spacing:1.5px;}
+  .right-panels{flex-direction:row;flex-wrap:wrap;}
+  .modal{min-width:92vw;padding:22px 18px;margin:0 8px;}
+}
 </style>
 </head>
 <body>
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="orb orb3"></div>
+<div class="wrap">
 
-<div class="page-wrap">
-  <!-- HEADER -->
-  <div class="header">
-    <h1>Monthly Habit Tracker</h1>
-    <div class="header-actions">
-      <button class="btn btn-white" onclick="saveData()">💾 Save</button>
-      <button class="btn btn-white" onclick="exportCSV()">📊 Export</button>
-      <button class="btn btn-danger" onclick="confirmReset()">🗑 Reset</button>
+<!-- HEADER -->
+<div class="header">
+  <h1>✦ Monthly Habit Tracker ✦</h1>
+  <p class="header-sub">Track &nbsp;·&nbsp; Build &nbsp;·&nbsp; Achieve</p>
+  <div class="header-actions">
+    <button class="btn btn-g" onclick="saveData()">💾 Save</button>
+    <button class="btn btn-g" onclick="exportCSV()">📊 Export</button>
+    <button class="btn btn-r" onclick="confirmReset()">🗑 Reset</button>
+  </div>
+</div>
+
+<!-- MAIN GRID -->
+<div class="main-grid">
+  <!-- LEFT -->
+  <div class="gc left-panel">
+    <div class="meta-row">
+      <div class="meta-label">Year</div>
+      <input class="meta-input" id="selYear" type="number" min="2000" max="2100" value="2025" onchange="rebuildAll()">
+    </div>
+    <div class="meta-row">
+      <div class="meta-label">Month</div>
+      <select class="meta-select" id="selMonth" onchange="rebuildAll()">
+        <option value="0">January</option><option value="1">February</option>
+        <option value="2">March</option><option value="3">April</option>
+        <option value="4">May</option><option value="5">June</option>
+        <option value="6">July</option><option value="7">August</option>
+        <option value="8">September</option><option value="9">October</option>
+        <option value="10">November</option><option value="11">December</option>
+      </select>
+    </div>
+    <div class="divider"></div>
+    <div class="meta-row"><div class="meta-label">Start Date</div><div class="meta-val" id="startDate">–</div></div>
+    <div class="meta-row"><div class="meta-label">End Date</div><div class="meta-val" id="endDate">–</div></div>
+    <div class="days-badge">
+      <div class="big-num" id="totalDaysNum">31</div>
+      <div class="lbl">TOTAL DAYS</div>
     </div>
   </div>
 
-  <!-- TOP ROW -->
-  <div class="main-grid">
-    <!-- LEFT PANEL -->
-    <div class="left-panel">
-      <div class="meta-row">
-        <div class="meta-label">Year</div>
-        <input class="meta-input" id="selYear" type="number" min="2000" max="2100" value="2025" onchange="rebuildAll()">
-      </div>
-      <div class="meta-row">
-        <div class="meta-label">Month</div>
-        <select class="meta-select" id="selMonth" onchange="rebuildAll()">
-          <option value="0">January</option><option value="1">February</option>
-          <option value="2">March</option><option value="3">April</option>
-          <option value="4">May</option><option value="5">June</option>
-          <option value="6">July</option><option value="7">August</option>
-          <option value="8">September</option><option value="9">October</option>
-          <option value="10">November</option><option value="11">December</option>
-        </select>
-      </div>
-      <div class="divider"></div>
-      <div class="meta-row"><div class="meta-label">Start Date</div><div class="meta-val" id="startDate">–</div></div>
-      <div class="meta-row"><div class="meta-label">End Date</div><div class="meta-val" id="endDate">–</div></div>
-      <div class="days-badge">
-        <div class="big-num" id="totalDaysNum">31</div>
-        <div class="lbl">TOTAL DAYS</div>
-      </div>
-    </div>
-
-    <!-- BAR CHART -->
-    <div class="chart-area">
-      <canvas id="barChart"></canvas>
-      <div class="day-numbers" id="dayNumbers"></div>
-    </div>
-
-    <!-- SUCCESS RATE -->
-    <div class="success-panel">
-      <div class="success-label">Success Rate</div>
-      <div class="success-pct" id="successPct">0%</div>
-      <div id="successIcon" style="font-size:1.2rem;margin:4px 0;">😐</div>
-      <div class="success-msg" id="successMsg">START NOW</div>
-    </div>
-
-    <!-- RIGHT DONUTS -->
-    <div class="right-panels">
-      <div class="donut-panel dp-monthly">
-        <div class="donut-title">Monthly Progress</div>
-        <div class="donut-wrap">
-          <canvas id="donut1" width="90" height="90"></canvas>
-          <div class="donut-center">
-            <div class="donut-pct" id="d1pct">0%</div>
-            <div class="donut-sub">done</div>
-          </div>
-        </div>
-      </div>
-      <div class="donut-panel dp-normalized">
-        <div class="donut-title">Days Progress Normalized</div>
-        <div class="donut-wrap">
-          <canvas id="donut2" width="90" height="90"></canvas>
-          <div class="donut-center">
-            <div class="donut-pct" id="d2pct">0%</div>
-            <div class="donut-sub">vs days</div>
-          </div>
-        </div>
-      </div>
-      <div class="donut-panel dp-momentum">
-        <div class="donut-title">Last 3 Days Momentum</div>
-        <div class="donut-wrap">
-          <canvas id="donut3" width="90" height="90"></canvas>
-          <div class="donut-center">
-            <div class="donut-pct" id="d3pct">0%</div>
-            <div class="donut-sub">recent</div>
-          </div>
-        </div>
-      </div>
-    </div>
+  <!-- CHART -->
+  <div class="gc chart-area">
+    <canvas id="barChart"></canvas>
+    <div class="day-numbers" id="dayNumbers"></div>
   </div>
 
-  <!-- HABIT TABLE -->
-  <div class="table-wrap">
-    <table class="habit-table" id="habitTable">
-      <thead id="tableHead"></thead>
-      <tbody id="tableBody"></tbody>
-    </table>
+  <!-- SUCCESS -->
+  <div class="gc success-panel">
+    <div class="s-label">Success Rate</div>
+    <span class="s-pct" id="successPct">0%</span>
+    <span class="s-icon" id="successIcon">😐</span>
+    <div class="s-msg" id="successMsg">START NOW</div>
   </div>
 
-  <!-- BOTTOM ROW -->
-  <div class="bottom-row">
-    <div class="bottom-hint">In the sections above, briefly describe the habits you aim to develop. Additionally, enter your monthly targets for how often you plan to maintain these habits.</div>
-    <div class="bottom-bar-chart" id="bottomBarChart"></div>
-    <div class="total-panel">
-      <div class="total-big" id="totalCompleted">0/0</div>
-      <div class="total-sub">COMPLETED</div>
+  <!-- DONUTS -->
+  <div class="right-panels">
+    <div class="dp dp1">
+      <div class="dp-title">Monthly Progress</div>
+      <div class="dp-wrap"><canvas id="donut1" width="86" height="86"></canvas>
+        <div class="dp-center"><div class="dp-pct" id="d1pct">0%</div><div class="dp-sub">done</div></div></div>
     </div>
-    <div style="display:flex;gap:8px;padding:0 0 0 8px;align-items:center;">
-      <button class="btn btn-teal" onclick="openAddModal()" style="flex:1">+ Add Habit</button>
+    <div class="dp dp2">
+      <div class="dp-title">Days Normalized</div>
+      <div class="dp-wrap"><canvas id="donut2" width="86" height="86"></canvas>
+        <div class="dp-center"><div class="dp-pct" id="d2pct">0%</div><div class="dp-sub">vs days</div></div></div>
+    </div>
+    <div class="dp dp3">
+      <div class="dp-title">3-Day Momentum</div>
+      <div class="dp-wrap"><canvas id="donut3" width="86" height="86"></canvas>
+        <div class="dp-center"><div class="dp-pct" id="d3pct">0%</div><div class="dp-sub">recent</div></div></div>
     </div>
   </div>
 </div>
 
-<!-- ADD HABIT MODAL -->
+<!-- TABLE -->
+<div class="table-glass">
+  <div class="table-wrap">
+    <table class="ht" id="habitTable">
+      <thead id="tableHead"></thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- BOTTOM -->
+<div class="bot-row">
+  <div class="gc bot-hint">Describe the habits you aim to develop and set your monthly targets for each habit.</div>
+  <div class="gc" style="padding:13px 15px;">
+    <div style="font-size:0.58rem;color:var(--accent2);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:7px;">Weekly Activity</div>
+    <div class="bot-bars" id="bottomBarChart"></div>
+  </div>
+  <div class="gc tot-panel">
+    <div class="tot-big" id="totalCompleted">0/0</div>
+    <div class="tot-sub">Completed</div>
+  </div>
+  <div class="gc add-panel">
+    <button class="btn btn-v" style="width:100%;padding:12px;font-size:0.88rem;" onclick="openAddModal()">＋ Add New Habit</button>
+  </div>
+</div>
+
+</div><!-- /wrap -->
+
+<!-- MODAL -->
 <div class="modal-bg" id="addModal">
   <div class="modal">
-    <h2>Add New Habit</h2>
+    <h2>New Habit</h2>
     <label>Habit Name</label>
     <input type="text" id="newHabitName" placeholder="e.g. Exercise, Reading…" maxlength="30">
     <label>Monthly Goal (days)</label>
     <input type="number" id="newHabitGoal" placeholder="25" min="1" max="31" value="25">
     <div class="modal-btns">
-      <button class="btn btn-white" onclick="closeAddModal()" style="border:2px solid var(--gray-border)">Cancel</button>
-      <button class="btn btn-teal" onclick="addHabit()">Add Habit</button>
+      <button class="btn btn-g" onclick="closeAddModal()">Cancel</button>
+      <button class="btn btn-v" onclick="addHabit()">Add Habit</button>
     </div>
   </div>
 </div>
-
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
 <script>
-// ============================================================
-//  DATA MODEL
-// ============================================================
-const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-const DAYS_SHORT = ['S','M','T','W','T','F','S'];
-const STORAGE_KEY = 'habitTrackerData_v2';
+const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const STORAGE_KEY='habitTrackerData_v2';
+let state={year:new Date().getFullYear(),month:new Date().getMonth(),
+  habits:[
+    {id:uid(),name:'Learning',goal:25,checks:{}},
+    {id:uid(),name:'DSA',goal:25,checks:{}},
+    {id:uid(),name:'Spring',goal:25,checks:{}},
+    {id:uid(),name:'React',goal:25,checks:{}},
+    {id:uid(),name:'Exercise',goal:25,checks:{}},
+  ]};
+function uid(){return '_'+Math.random().toString(36).slice(2,9);}
 
-let state = {
-  year: new Date().getFullYear(),
-  month: new Date().getMonth(),
-  habits: [
-    { id: uid(), name: 'Learning', goal: 25, checks: {} },
-    { id: uid(), name: 'DSA', goal: 25, checks: {} },
-    { id: uid(), name: 'Spring', goal: 25, checks: {} },
-    { id: uid(), name: 'React', goal: 25, checks: {} },
-    { id: uid(), name: 'Exercise', goal: 25, checks: {} },
-  ]
-};
-
-function uid() { return '_' + Math.random().toString(36).slice(2, 9); }
-
-// ============================================================
-//  PERSISTENCE
-// ============================================================
-function saveData() {
-  state.year = parseInt(document.getElementById('selYear').value);
-  state.month = parseInt(document.getElementById('selMonth').value);
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+function saveData(){
+  state.year=parseInt(document.getElementById('selYear').value);
+  state.month=parseInt(document.getElementById('selMonth').value);
+  localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
   showToast('✅ Saved!');
 }
-
-function loadData() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) {
-      const parsed = JSON.parse(raw);
-      state = parsed;
-    }
-  } catch(e) {}
-}
-
-function confirmReset() {
-  if (confirm('Reset ALL data for this month? This cannot be undone.')) {
-    // clear checks for current month
-    const key = `${state.year}-${state.month}`;
-    state.habits.forEach(h => {
-      Object.keys(h.checks).forEach(k => {
-        if (k.startsWith(key + '-')) delete h.checks[k];
-      });
-    });
-    saveData();
-    rebuildAll();
-    showToast('🗑 Month data cleared');
+function loadData(){try{const r=localStorage.getItem(STORAGE_KEY);if(r)state=JSON.parse(r);}catch(e){}}
+function confirmReset(){
+  if(confirm('Reset ALL data for this month?')){
+    const key=`${state.year}-${state.month}`;
+    state.habits.forEach(h=>{Object.keys(h.checks).forEach(k=>{if(k.startsWith(key+'-'))delete h.checks[k];});});
+    saveData();rebuildAll();showToast('🗑 Cleared');
   }
 }
+function getDaysInMonth(y,m){return new Date(y,m+1,0).getDate();}
+function getDayOfWeek(y,m,d){return new Date(y,m,d).getDay();}
+function ck(y,m,d){return `${y}-${m}-${d}`;}
+function isWknd(y,m,d){const w=getDayOfWeek(y,m,d);return w===0||w===6;}
+function isToday(y,m,d){const n=new Date();return n.getFullYear()===y&&n.getMonth()===m&&n.getDate()===d;}
+function progColor(p){if(p>=80)return'#10b981';if(p>=50)return'#06b6d4';if(p>=30)return'#f59e0b';return'#ef4444';}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200);}
 
-// ============================================================
-//  UTILITY
-// ============================================================
-function getDaysInMonth(year, month) {
-  return new Date(year, month + 1, 0).getDate();
-}
-function getFirstDayOfWeek(year, month) {
-  return new Date(year, month, 1).getDay();
-}
-function getDayOfWeek(year, month, day) {
-  return new Date(year, month, day).getDay();
-}
-function checkKey(year, month, day) {
-  return `${year}-${month}-${day}`;
-}
-function isWeekend(year, month, day) {
-  const d = getDayOfWeek(year, month, day);
-  return d === 0 || d === 6;
-}
-function isToday(year, month, day) {
-  const n = new Date();
-  return n.getFullYear() === year && n.getMonth() === month && n.getDate() === day;
-}
-function isPast(year, month, day) {
-  const n = new Date(); n.setHours(0,0,0,0);
-  const d = new Date(year, month, day);
-  return d <= n;
+function calcStats(){
+  const{year,month,habits}=state;
+  const totalDays=getDaysInMonth(year,month);
+  const today=new Date();today.setHours(0,0,0,0);
+  const isCur=today.getFullYear()===year&&today.getMonth()===month;
+  const daysPassed=isCur?Math.min(today.getDate(),totalDays):(new Date(year,month,1)<today?totalDays:0);
+  let tc=0,tg=0;const dc=Array(totalDays).fill(0);
+  habits.forEach(h=>{let hc=0;for(let d=1;d<=totalDays;d++){if(h.checks[ck(year,month,d)]){hc++;dc[d-1]++;}}tc+=hc;tg+=h.goal;});
+  const sr=tg>0?Math.round((tc/tg)*100):0;
+  const mp=habits.length*totalDays>0?Math.round((tc/(habits.length*totalDays))*100):0;
+  const np=habits.length*daysPassed>0?Math.round((tc/(habits.length*daysPassed))*100):0;
+  const ls=Math.max(1,daysPassed-2);let lc=0,lm=0;
+  for(let d=ls;d<=daysPassed;d++)habits.forEach(h=>{lm++;if(h.checks[ck(year,month,d)])lc++;});
+  return{totalDays,daysPassed,totalChecked:tc,totalGoal:tg,dailyCounts:dc,successRate:sr,monthlyPct:mp,normalizedPct:np,momentumPct:lm>0?Math.round((lc/lm)*100):0};
 }
 
-function getProgressColor(pct) {
-  if (pct >= 80) return '#3aaf85';
-  if (pct >= 50) return '#4bbfd4';
-  if (pct >= 30) return '#f5c842';
-  return '#e05050';
+function rebuildAll(){
+  state.year=parseInt(document.getElementById('selYear').value);
+  state.month=parseInt(document.getElementById('selMonth').value);
+  updateMeta();buildTableHead();buildTableBody();updateStats();saveData();
 }
-
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2200);
+function updateMeta(){
+  const{year,month}=state;const td=getDaysInMonth(year,month);const mn=MONTHS[month];
+  document.getElementById('startDate').textContent=`${mn} 1, ${year}`;
+  document.getElementById('endDate').textContent=`${mn} ${td}, ${year}`;
+  document.getElementById('totalDaysNum').textContent=td;
 }
-
-// ============================================================
-//  CALCULATIONS
-// ============================================================
-function calcStats() {
-  const { year, month, habits } = state;
-  const totalDays = getDaysInMonth(year, month);
-  const today = new Date(); today.setHours(0,0,0,0);
-  const monthDate = new Date(year, month, 1);
-  const isCurrentMonth = today.getFullYear() === year && today.getMonth() === month;
-  const daysPassed = isCurrentMonth ? Math.min(today.getDate(), totalDays) : (monthDate < today ? totalDays : 0);
-
-  let totalChecked = 0, totalGoal = 0;
-  let dailyCounts = Array(totalDays).fill(0);
-
-  habits.forEach(h => {
-    let habitChecked = 0;
-    for (let d = 1; d <= totalDays; d++) {
-      const k = checkKey(year, month, d);
-      if (h.checks[k]) { habitChecked++; dailyCounts[d-1]++; }
+function buildTableHead(){
+  const{year,month}=state;const td=getDaysInMonth(year,month);
+  let h='<tr><th class="hc">Habit</th><th class="gc2">Goal</th>';
+  for(let d=1;d<=td;d++){const t=isToday(year,month,d)?' tdy-hdr':'';h+=`<th class="dh${t}"><div>${d}</div></th>`;}
+  h+='<th class="pc">Progress</th></tr>';
+  document.getElementById('tableHead').innerHTML=h;
+}
+function buildTableBody(){
+  const{year,month,habits}=state;const td=getDaysInMonth(year,month);
+  let h='';
+  habits.forEach((hab,hi)=>{
+    let chk=0;for(let d=1;d<=td;d++){if(hab.checks[ck(year,month,d)])chk++;}
+    const pct=hab.goal>0?Math.min(100,Math.round((chk/hab.goal)*100)):0;
+    const col=progColor(pct);
+    h+=`<tr data-hi="${hi}">`;
+    h+=`<td class="hn-cell"><input class="hn-inp" value="${hab.name}" onchange="renameHabit(${hi},this.value)" onblur="saveData()"></td>`;
+    h+=`<td><input class="gi" type="number" min="1" max="31" value="${hab.goal}" onchange="changeGoal(${hi},this.value)"></td>`;
+    for(let d=1;d<=td;d++){
+      const isk=hab.checks[ck(year,month,d)]?' ck':'';
+      const iw=isWknd(year,month,d)?' wknd':'';
+      const it=isToday(year,month,d)?' tdy-col':'';
+      h+=`<td class="dc${isk}${iw}${it}" onclick="toggleCheck(${hi},${d})"></td>`;
     }
-    totalChecked += habitChecked;
-    totalGoal += h.goal;
+    h+=`<td class="prog-cell"><div class="pb-wrap">
+      <div class="pb-bg"><div class="pb-fill" style="width:${pct}%;background:${col};box-shadow:0 0 8px ${col}88;"></div></div>
+      <span class="pb-pct" style="color:${col}">${pct}%</span>
+      <button class="del-b" onclick="deleteHabit(${hi})">✕</button>
+    </div></td></tr>`;
   });
-
-  // Success rate = completed / total goal
-  const successRate = totalGoal > 0 ? Math.round((totalChecked / totalGoal) * 100) : 0;
-
-  // Monthly progress = checked / (habits * totalDays) * 100
-  const maxPossible = habits.length * totalDays;
-  const monthlyPct = maxPossible > 0 ? Math.round((totalChecked / maxPossible) * 100) : 0;
-
-  // Normalized = checked / (habits * daysPassed) * 100
-  const maxPassed = habits.length * daysPassed;
-  const normalizedPct = maxPassed > 0 ? Math.round((totalChecked / maxPassed) * 100) : 0;
-
-  // Last 3 days momentum
-  const last3Start = Math.max(1, daysPassed - 2);
-  let last3Checked = 0, last3Max = 0;
-  for (let d = last3Start; d <= daysPassed; d++) {
-    habits.forEach(h => {
-      last3Max++;
-      if (h.checks[checkKey(year, month, d)]) last3Checked++;
-    });
-  }
-  const momentumPct = last3Max > 0 ? Math.round((last3Checked / last3Max) * 100) : 0;
-
-  return {
-    totalDays, daysPassed, totalChecked, totalGoal,
-    dailyCounts, successRate, monthlyPct, normalizedPct, momentumPct
-  };
+  document.getElementById('tableBody').innerHTML=h;
 }
 
-// ============================================================
-//  BUILD UI
-// ============================================================
-function rebuildAll() {
-  state.year = parseInt(document.getElementById('selYear').value);
-  state.month = parseInt(document.getElementById('selMonth').value);
-  updateMeta();
-  buildTableHead();
-  buildTableBody();
-  updateStats();
-  saveData();
-}
-
-function updateMeta() {
-  const { year, month } = state;
-  const totalDays = getDaysInMonth(year, month);
-  const monthName = MONTHS[month];
-  document.getElementById('startDate').textContent = `${monthName} 1, ${year}`;
-  document.getElementById('endDate').textContent = `${monthName} ${totalDays}, ${year}`;
-  document.getElementById('totalDaysNum').textContent = totalDays;
-}
-
-function buildTableHead() {
-  const { year, month } = state;
-  const totalDays = getDaysInMonth(year, month);
-  const head = document.getElementById('tableHead');
-
-  let html = '<tr>';
-  html += '<th class="habit-col">HABIT</th>';
-  html += '<th class="goal-col">GOAL</th>';
-  for (let d = 1; d <= totalDays; d++) {
-    const dow = getDayOfWeek(year, month, d);
-    const todayCls = isToday(year, month, d) ? ' today-header' : '';
-    html += `<th class="day-header${todayCls}"><div class="day-num">${d}</div></th>`;
-  }
-  html += '<th class="progress-col">PROGRESS</th>';
-  html += '</tr>';
-  head.innerHTML = html;
-}
-
-function buildTableBody() {
-  const { year, month, habits } = state;
-  const totalDays = getDaysInMonth(year, month);
-  const body = document.getElementById('tableBody');
-
-  let html = '';
-  habits.forEach((h, hi) => {
-    let checked = 0;
-    for (let d = 1; d <= totalDays; d++) {
-      if (h.checks[checkKey(year, month, d)]) checked++;
-    }
-    const pct = h.goal > 0 ? Math.min(100, Math.round((checked / h.goal) * 100)) : 0;
-    const color = getProgressColor(pct);
-
-    html += `<tr data-hi="${hi}">`;
-    html += `<td class="habit-name-cell"><input class="habit-name-input" value="${h.name}" data-hi="${hi}" onchange="renameHabit(${hi},this.value)" onblur="saveData()"></td>`;
-    html += `<td><input class="goal-input" type="number" min="1" max="31" value="${h.goal}" data-hi="${hi}" onchange="changeGoal(${hi},this.value)"></td>`;
-
-    for (let d = 1; d <= totalDays; d++) {
-      const k = checkKey(year, month, d);
-      const isc = h.checks[k] ? ' checked' : '';
-      const wknd = isWeekend(year, month, d) ? ' weekend' : '';
-      const todayCls = isToday(year, month, d) ? ' today-col' : '';
-      html += `<td class="day-cell${isc}${wknd}${todayCls}" onclick="toggleCheck(${hi},${d})" title="Day ${d}"></td>`;
-    }
-
-    html += `<td class="progress-cell">
-      <div class="progress-bar-wrap">
-        <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${pct}%;background:${color}"></div></div>
-        <span class="progress-pct" style="color:${color}">${pct}%</span>
-        <button class="del-btn" onclick="deleteHabit(${hi})" title="Delete habit">✕</button>
-      </div>
-    </td>`;
-    html += '</tr>';
-  });
-
-  body.innerHTML = html;
-}
-
-function updateStats() {
-  const s = calcStats();
-
-  // Success rate
-  document.getElementById('successPct').textContent = s.successRate + '%';
-  let icon = '😐', msg = 'KEEP GOING';
-  if (s.successRate >= 90) { icon = '🔥'; msg = 'EXCELLENT!'; }
-  else if (s.successRate >= 75) { icon = '💪'; msg = 'GREAT JOB!'; }
-  else if (s.successRate >= 50) { icon = '😊'; msg = 'GOOD PROGRESS'; }
-  else if (s.successRate >= 25) { icon = '😐'; msg = 'DO BETTER'; }
-  else { icon = '😔'; msg = 'START NOW!'; }
-  document.getElementById('successIcon').textContent = icon;
-  document.getElementById('successMsg').textContent = msg;
-
-  // Totals
-  document.getElementById('totalCompleted').textContent = `${s.totalChecked}/${s.totalGoal}`;
-
-  // Donuts
-  drawDonut('donut1', s.monthlyPct, '#ffffff55', '#fff');
-  drawDonut('donut2', s.normalizedPct, '#ffffff55', '#fff');
-  drawDonut('donut3', s.momentumPct, '#ffffff55', '#fff');
-  document.getElementById('d1pct').textContent = s.monthlyPct + '%';
-  document.getElementById('d2pct').textContent = s.normalizedPct + '%';
-  document.getElementById('d3pct').textContent = s.momentumPct + '%';
-
-  // Bar chart
-  drawBarChart(s.dailyCounts, s.totalDays);
-
-  // Bottom bar chart (per-day totals simplified to weekly)
+function updateStats(){
+  const s=calcStats();
+  document.getElementById('successPct').textContent=s.successRate+'%';
+  let icon='😐',msg='KEEP GOING';
+  if(s.successRate>=90){icon='🔥';msg='EXCELLENT!';}else if(s.successRate>=75){icon='💪';msg='GREAT JOB!';}
+  else if(s.successRate>=50){icon='😊';msg='GOOD PROGRESS';}else if(s.successRate>=25){icon='😐';msg='DO BETTER';}else{icon='😔';msg='START NOW!';}
+  document.getElementById('successIcon').textContent=icon;
+  document.getElementById('successMsg').textContent=msg;
+  document.getElementById('totalCompleted').textContent=`${s.totalChecked}/${s.totalGoal}`;
+  drawDonut('donut1',s.monthlyPct,'#c4b5fd');
+  drawDonut('donut2',s.normalizedPct,'#6ee7b7');
+  drawDonut('donut3',s.momentumPct,'#fde68a');
+  document.getElementById('d1pct').textContent=s.monthlyPct+'%';
+  document.getElementById('d2pct').textContent=s.normalizedPct+'%';
+  document.getElementById('d3pct').textContent=s.momentumPct+'%';
+  drawBarChart(s.dailyCounts,s.totalDays);
   drawBottomBars(s.dailyCounts);
 }
 
-function drawDonut(canvasId, pct, trackColor, fillColor) {
-  const c = document.getElementById(canvasId);
-  if (!c) return;
-  const ctx = c.getContext('2d');
-  const w = c.width, h = c.height, r = (Math.min(w,h)/2) - 8;
-  const cx = w/2, cy = h/2;
-  ctx.clearRect(0, 0, w, h);
-
-  const start = -Math.PI/2;
-  const end = start + (2*Math.PI * pct/100);
-
-  // Track
-  ctx.beginPath();
-  ctx.arc(cx, cy, r, 0, 2*Math.PI);
-  ctx.strokeStyle = 'rgba(255,255,255,0.25)';
-  ctx.lineWidth = 10;
-  ctx.stroke();
-
-  // Fill
-  ctx.beginPath();
-  ctx.arc(cx, cy, r, start, end);
-  ctx.strokeStyle = 'rgba(255,255,255,0.9)';
-  ctx.lineWidth = 10;
-  ctx.lineCap = 'round';
-  ctx.stroke();
+function drawDonut(id,pct,fill){
+  const c=document.getElementById(id);if(!c)return;
+  const ctx=c.getContext('2d');const dpr=window.devicePixelRatio||1;
+  const sz=86;c.width=sz*dpr;c.height=sz*dpr;c.style.width=sz+'px';c.style.height=sz+'px';
+  ctx.scale(dpr,dpr);const cx=sz/2,cy=sz/2,r=30;ctx.clearRect(0,0,sz,sz);
+  ctx.beginPath();ctx.arc(cx,cy,r,0,2*Math.PI);ctx.strokeStyle='rgba(255,255,255,0.09)';ctx.lineWidth=7;ctx.stroke();
+  if(pct>0){
+    ctx.beginPath();ctx.arc(cx,cy,r,-Math.PI/2,-Math.PI/2+2*Math.PI*pct/100);
+    ctx.strokeStyle=fill;ctx.lineWidth=7;ctx.lineCap='round';ctx.stroke();
+    ctx.save();ctx.shadowColor=fill;ctx.shadowBlur=14;
+    ctx.beginPath();ctx.arc(cx,cy,r,-Math.PI/2,-Math.PI/2+2*Math.PI*pct/100);
+    ctx.strokeStyle=fill;ctx.lineWidth=2;ctx.stroke();ctx.restore();
+  }
 }
 
-function drawBarChart(dailyCounts, totalDays) {
-  const c = document.getElementById('barChart');
-  if (!c) return;
-  const ctx = c.getContext('2d');
-  const dpr = window.devicePixelRatio || 1;
-  const w = c.parentElement.clientWidth - 32;
-  const h = 160;
-  c.width = w * dpr; c.height = h * dpr;
-  c.style.width = w + 'px'; c.style.height = h + 'px';
-  ctx.scale(dpr, dpr);
-  ctx.clearRect(0,0,w,h);
-
-  const maxVal = Math.max(...dailyCounts, 1);
-  const barW = (w / totalDays) * 0.65;
-  const gap = (w / totalDays) * 0.35;
-  const pad = gap/2;
-
-  // Grid lines
-  ctx.strokeStyle = 'rgba(255,255,255,0.15)';
-  ctx.lineWidth = 1;
-  for (let i = 0; i <= maxVal; i++) {
-    const y = h - 20 - ((i/maxVal) * (h-30));
-    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
-    ctx.fillStyle = 'rgba(255,255,255,0.5)';
-    ctx.font = '9px DM Sans';
-    ctx.fillText(i, 2, y - 2);
+function drawBarChart(dc,td){
+  const c=document.getElementById('barChart');if(!c)return;
+  const ctx=c.getContext('2d');const dpr=window.devicePixelRatio||1;
+  const w=c.parentElement.clientWidth-28,h=150;
+  c.width=w*dpr;c.height=h*dpr;c.style.width=w+'px';c.style.height=h+'px';
+  ctx.scale(dpr,dpr);ctx.clearRect(0,0,w,h);
+  const pL=22,pR=8,pT=20,pB=26;
+  const cW=w-pL-pR,cH=h-pT-pB;
+  const mx=Math.max(...dc,1);
+  // Grid
+  for(let i=0;i<=mx;i++){
+    const y=pT+cH-(i/mx)*cH;
+    ctx.beginPath();ctx.strokeStyle='rgba(255,255,255,0.05)';ctx.lineWidth=1;
+    ctx.moveTo(pL,y);ctx.lineTo(w-pR,y);ctx.stroke();
+    ctx.fillStyle='rgba(255,255,255,0.28)';ctx.font='7px Outfit';ctx.textAlign='right';
+    ctx.fillText(i,pL-3,y+2.5);
   }
-
-  dailyCounts.forEach((count, i) => {
-    const x = pad + i * (w / totalDays);
-    const bh = count > 0 ? ((count/maxVal) * (h-30)) : 2;
-    const y = h - 20 - bh;
-
-    // Bar
-    const grad = ctx.createLinearGradient(0, y, 0, h-20);
-    grad.addColorStop(0, 'rgba(255,255,255,0.9)');
-    grad.addColorStop(1, 'rgba(255,255,255,0.3)');
-    ctx.fillStyle = grad;
-    ctx.beginPath();
-    ctx.roundRect ? ctx.roundRect(x, y, barW, bh, [3,3,0,0]) : ctx.rect(x, y, barW, bh);
-    ctx.fill();
-
-    // Count label
-    if (count > 0) {
-      ctx.fillStyle = 'white';
-      ctx.font = 'bold 9px DM Sans';
-      ctx.textAlign = 'center';
-      ctx.fillText(count, x + barW/2, y - 3);
-    }
+  const pts=dc.map((v,i)=>({
+    x:td>1?pL+(i/(td-1))*cW:pL+cW/2,
+    y:pT+cH-(v/mx)*cH,v
+  }));
+  // Area
+  ctx.save();ctx.beginPath();ctx.moveTo(pts[0].x,pT+cH);
+  pts.forEach(p=>ctx.lineTo(p.x,p.y));
+  ctx.lineTo(pts[pts.length-1].x,pT+cH);ctx.closePath();
+  const ag=ctx.createLinearGradient(0,pT,0,pT+cH);
+  ag.addColorStop(0,'rgba(255,68,68,0.28)');ag.addColorStop(0.6,'rgba(255,140,0,0.1)');ag.addColorStop(1,'rgba(255,68,68,0.01)');
+  ctx.fillStyle=ag;ctx.fill();ctx.restore();
+  // Glow line
+  const lg=ctx.createLinearGradient(pL,0,w-pR,0);
+  lg.addColorStop(0,'#FFD700');lg.addColorStop(0.35,'#FF8C00');lg.addColorStop(0.65,'#FF4444');lg.addColorStop(1,'#FFD700');
+  ctx.save();ctx.shadowColor='rgba(255,210,0,0.65)';ctx.shadowBlur=10;
+  ctx.beginPath();ctx.moveTo(pts[0].x,pts[0].y);pts.forEach(p=>ctx.lineTo(p.x,p.y));
+  ctx.strokeStyle=lg;ctx.lineWidth=2.8;ctx.lineJoin='round';ctx.stroke();ctx.restore();
+  ctx.beginPath();ctx.moveTo(pts[0].x,pts[0].y);pts.forEach(p=>ctx.lineTo(p.x,p.y));
+  ctx.strokeStyle=lg;ctx.lineWidth=1.8;ctx.lineJoin='round';ctx.stroke();
+  // Dots
+  pts.forEach(p=>{
+    if(p.v>0){
+      ctx.beginPath();ctx.arc(p.x,p.y,5.5,0,Math.PI*2);ctx.fillStyle='rgba(255,68,68,0.22)';ctx.fill();
+      ctx.beginPath();ctx.arc(p.x,p.y,3.5,0,Math.PI*2);ctx.fillStyle='#FF4444';ctx.fill();
+      ctx.beginPath();ctx.arc(p.x,p.y,1.8,0,Math.PI*2);ctx.fillStyle='#FFD700';ctx.fill();
+      ctx.save();ctx.shadowColor='#FFD700';ctx.shadowBlur=8;
+      ctx.beginPath();ctx.arc(p.x,p.y,1.8,0,Math.PI*2);ctx.fillStyle='#FFD700';ctx.fill();ctx.restore();
+      ctx.fillStyle='#FFD700';ctx.font='bold 8px Outfit';ctx.textAlign='center';ctx.fillText(p.v,p.x,p.y-9);
+    }else{ctx.beginPath();ctx.arc(p.x,p.y,2,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,0.12)';ctx.fill();}
   });
+  const dn=document.getElementById('dayNumbers');
+  let html='';for(let d=1;d<=td;d++)html+=`<span style="flex:1;text-align:center">${d}</span>`;
+  dn.innerHTML=html;
+}
 
-  // Day numbers
-  const dn = document.getElementById('dayNumbers');
-  let html = '';
-  for (let d = 1; d <= totalDays; d++) {
-    html += `<span style="flex:1;text-align:center">${d}</span>`;
+function drawBottomBars(dc){
+  const cont=document.getElementById('bottomBarChart');
+  if(!state.habits.length){cont.innerHTML='';return;}
+  const weeks=[];
+  for(let i=0;i<dc.length;i+=7)weeks.push(dc.slice(i,i+7).reduce((a,b)=>a+b,0));
+  const mx=Math.max(...weeks,1);
+  cont.innerHTML=weeks.map((w,i)=>`<div class="bbc">
+    <div class="bbc-b" style="height:${Math.round((w/mx)*42)}px;min-height:3px"></div>
+    <div class="bbc-l">W${i+1}</div></div>`).join('');
+}
+
+function toggleCheck(hi,day){
+  const{year,month}=state;const k=ck(year,month,day);const h=state.habits[hi];
+  h.checks[k]=!h.checks[k];if(!h.checks[k])delete h.checks[k];
+  const rows=document.querySelectorAll('#tableBody tr');const row=rows[hi];
+  if(row){
+    const cells=row.querySelectorAll('.dc');const cell=cells[day-1];
+    if(cell)cell.classList.toggle('ck');
+    const td=getDaysInMonth(year,month);let chk=0;
+    for(let d=1;d<=td;d++){if(h.checks[ck(year,month,d)])chk++;}
+    const pct=h.goal>0?Math.min(100,Math.round((chk/h.goal)*100)):0;
+    const col=progColor(pct);
+    const fill=row.querySelector('.pb-fill');const ps=row.querySelector('.pb-pct');
+    if(fill){fill.style.width=pct+'%';fill.style.background=col;fill.style.boxShadow=`0 0 8px ${col}88`;}
+    if(ps){ps.textContent=pct+'%';ps.style.color=col;}
   }
-  dn.innerHTML = html;
+  updateStats();saveData();
 }
-
-function drawBottomBars(dailyCounts) {
-  const container = document.getElementById('bottomBarChart');
-  const habits = state.habits;
-  if (!habits.length) { container.innerHTML = ''; return; }
-
-  // Group into weeks
-  const weeks = [];
-  for (let i = 0; i < dailyCounts.length; i += 7) {
-    const chunk = dailyCounts.slice(i, i+7);
-    weeks.push(chunk.reduce((a,b) => a+b, 0));
-  }
-
-  const maxW = Math.max(...weeks, 1);
-  const maxH = 40;
-  let html = '';
-  weeks.forEach((w, i) => {
-    const bh = Math.round((w/maxW) * maxH);
-    html += `<div class="bbc-col">
-      <div class="bbc-bar" style="height:${bh}px;min-height:2px"></div>
-      <div class="bbc-lbl">W${i+1}</div>
-    </div>`;
-  });
-  container.innerHTML = html;
+function renameHabit(hi,val){state.habits[hi].name=val.trim()||`Habit ${hi+1}`;}
+function changeGoal(hi,val){
+  state.habits[hi].goal=Math.max(1,Math.min(31,parseInt(val)||25));
+  buildTableBody();updateStats();saveData();
 }
-
-// ============================================================
-//  INTERACTIONS
-// ============================================================
-function toggleCheck(hi, day) {
-  const { year, month } = state;
-  const k = checkKey(year, month, day);
-  const h = state.habits[hi];
-  h.checks[k] = !h.checks[k];
-  if (!h.checks[k]) delete h.checks[k];
-
-  // Toggle cell checked class
-  const rows = document.querySelectorAll('#tableBody tr');
-  const row = rows[hi];
-  if (row) {
-    const cells = row.querySelectorAll('.day-cell');
-    const cell = cells[day-1];
-    if (cell) cell.classList.toggle('checked');
-
-    // Recalculate and update progress bar live
-    const totalDays = getDaysInMonth(year, month);
-    let checked = 0;
-    for (let d = 1; d <= totalDays; d++) {
-      if (h.checks[checkKey(year, month, d)]) checked++;
-    }
-    const pct = h.goal > 0 ? Math.min(100, Math.round((checked / h.goal) * 100)) : 0;
-    const color = getProgressColor(pct);
-
-    const fill = row.querySelector('.progress-bar-fill');
-    const pctSpan = row.querySelector('.progress-pct');
-    if (fill) { fill.style.width = pct + '%'; fill.style.background = color; }
-    if (pctSpan) { pctSpan.textContent = pct + '%'; pctSpan.style.color = color; }
-  }
-
-  updateStats();
-  saveData();
+function deleteHabit(hi){
+  if(state.habits.length<=1){showToast('⚠️ Need at least 1 habit');return;}
+  state.habits.splice(hi,1);buildTableHead();buildTableBody();updateStats();saveData();showToast('Habit deleted');
 }
-
-function renameHabit(hi, val) {
-  state.habits[hi].name = val.trim() || `Habit ${hi+1}`;
-}
-
-function changeGoal(hi, val) {
-  const v = Math.max(1, Math.min(31, parseInt(val) || 25));
-  state.habits[hi].goal = v;
-  buildTableBody();
-  updateStats();
-  saveData();
-}
-
-function deleteHabit(hi) {
-  if (state.habits.length <= 1) { showToast('⚠️ At least one habit required'); return; }
-  state.habits.splice(hi, 1);
-  buildTableHead();
-  buildTableBody();
-  updateStats();
-  saveData();
-  showToast('Habit deleted');
-}
-
-// ============================================================
-//  ADD MODAL
-// ============================================================
-function openAddModal() {
-  document.getElementById('newHabitName').value = '';
-  document.getElementById('newHabitGoal').value = '25';
+function openAddModal(){
+  document.getElementById('newHabitName').value='';
+  document.getElementById('newHabitGoal').value='25';
   document.getElementById('addModal').classList.add('open');
-  setTimeout(() => document.getElementById('newHabitName').focus(), 100);
+  setTimeout(()=>document.getElementById('newHabitName').focus(),100);
 }
-function closeAddModal() {
-  document.getElementById('addModal').classList.remove('open');
-}
-function addHabit() {
-  const name = document.getElementById('newHabitName').value.trim();
-  const goal = parseInt(document.getElementById('newHabitGoal').value) || 25;
-  if (!name) { document.getElementById('newHabitName').style.borderColor='red'; return; }
-  state.habits.push({ id: uid(), name, goal, checks: {} });
-  closeAddModal();
-  buildTableHead();
-  buildTableBody();
-  updateStats();
-  saveData();
+function closeAddModal(){document.getElementById('addModal').classList.remove('open');}
+function addHabit(){
+  const name=document.getElementById('newHabitName').value.trim();
+  const goal=parseInt(document.getElementById('newHabitGoal').value)||25;
+  if(!name){document.getElementById('newHabitName').style.borderColor='#ef4444';return;}
+  state.habits.push({id:uid(),name,goal,checks:{}});
+  closeAddModal();buildTableHead();buildTableBody();updateStats();saveData();
   showToast(`✅ "${name}" added!`);
 }
-
-// ============================================================
-//  EXPORT
-// ============================================================
-function exportCSV() {
-  const { year, month, habits } = state;
-  const totalDays = getDaysInMonth(year, month);
-  const monthName = MONTHS[month];
-
-  let csv = `Monthly Habit Tracker - ${monthName} ${year}\n\n`;
-  let header = 'Habit,Goal';
-  for (let d = 1; d <= totalDays; d++) header += `,${d}`;
-  header += ',Completed,Progress%\n';
-  csv += header;
-
-  habits.forEach(h => {
-    let row = `"${h.name}",${h.goal}`;
-    let checked = 0;
-    for (let d = 1; d <= totalDays; d++) {
-      const v = h.checks[checkKey(year, month, d)] ? 1 : 0;
-      row += `,${v}`;
-      checked += v;
-    }
-    const pct = Math.round((checked/h.goal)*100);
-    row += `,${checked},${pct}%\n`;
-    csv += row;
+function exportCSV(){
+  const{year,month,habits}=state;const td=getDaysInMonth(year,month);
+  let csv=`Habit Tracker - ${MONTHS[month]} ${year}\n\nHabit,Goal`;
+  for(let d=1;d<=td;d++)csv+=`,${d}`;csv+=',Done,%\n';
+  habits.forEach(h=>{
+    let row=`"${h.name}",${h.goal}`;let chk=0;
+    for(let d=1;d<=td;d++){const v=h.checks[ck(year,month,d)]?1:0;row+=`,${v}`;chk+=v;}
+    csv+=row+`,${chk},${Math.round((chk/h.goal)*100)}%\n`;
   });
-
-  const blob = new Blob([csv], { type: 'text/csv' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = `habits_${year}_${month+1}.csv`;
-  a.click(); URL.revokeObjectURL(url);
-  showToast('📊 CSV exported!');
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+  a.download=`habits_${year}_${month+1}.csv`;a.click();showToast('📊 Exported!');
 }
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape')closeAddModal();
+  if((e.ctrlKey||e.metaKey)&&e.key==='s'){e.preventDefault();saveData();}
+});
+document.getElementById('addModal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeAddModal();});
+document.getElementById('newHabitName').addEventListener('keydown',e=>{if(e.key==='Enter')addHabit();});
 
-// ============================================================
-//  KEYBOARD
-// ============================================================
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') closeAddModal();
-  if ((e.ctrlKey || e.metaKey) && e.key === 's') { e.preventDefault(); saveData(); }
-});
-document.getElementById('addModal').addEventListener('click', e => {
-  if (e.target === e.currentTarget) closeAddModal();
-});
-document.getElementById('newHabitName').addEventListener('keydown', e => {
-  if (e.key === 'Enter') addHabit();
-});
-
-// ============================================================
-//  INIT
-// ============================================================
-function init() {
+function init(){
   loadData();
-  document.getElementById('selYear').value = state.year;
-  document.getElementById('selMonth').value = state.month;
-  updateMeta();
-  buildTableHead();
-  buildTableBody();
-  updateStats();
+  document.getElementById('selYear').value=state.year;
+  document.getElementById('selMonth').value=state.month;
+  updateMeta();buildTableHead();buildTableBody();updateStats();
 }
-
-window.addEventListener('resize', () => {
-  const s = calcStats();
-  drawBarChart(s.dailyCounts, s.totalDays);
-});
-
+window.addEventListener('resize',()=>{const s=calcStats();drawBarChart(s.dailyCounts,s.totalDays);});
 init();
 </script>
 </body>
